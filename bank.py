@@ -6,6 +6,7 @@ class Bank(object):
             self.id = id
             self.name = name
             self.account_types = account_types
+            self.accounts = {}
     
     def getBankName(self):
         return self.name
@@ -25,3 +26,20 @@ class Bank(object):
                 return 400000
             case _:
                 raise ValueError("Invalid account type")
+    
+    def addAccount(self, account):
+        """Add new bank account"""
+        key = account.account_number
+        self.accounts[key] = account
+    
+    def removeAccount(self,  account_number):
+        """Removes an account"""
+        key = account_number
+        return self.accounts.pop(key, None)
+
+    def getAccount(self, account_number):
+        """Returns an account with it's informations"""
+        key = account_number
+        return self.accounts.get(key, None)
+    
+    
