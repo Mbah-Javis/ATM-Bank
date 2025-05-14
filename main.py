@@ -80,8 +80,34 @@ def depositIntoAccount(bank: Bank):
     displayBankMenu(bank)
 
 def withdrawMoney(bank: Bank):
-    print(f"Selected bank: {bank.name}")
-    pass
+    print(f"Withdraw money from {bank.name} account")
+    account_number = input("--> Enter your account number: ")
+    account = bank.getAccount(account_number)
+    if account == None:
+        print("--> Account not found")
+        return
+    print(f"--> Account name: {account.name}")
+    amount = float(input("--> Enter amount to withdraw: "))
+    if amount <= 0:
+        print("--> Amount must be greater than 0")
+        return
+    withdrawal_limit = bank.getWithdrawalLimit(account.getAccountType())
+    if amount > withdrawal_limit:
+        print(f"--> Amount exceeds withdrawal limit of {withdrawal_limit}")
+        return
+    if amount > account.getBalance():
+        print(f"--> Insufficient funds. Current balance: {account.getBalance()}")
+        return
+    pin = int(input("--> Enter your PIN: "))
+    if pin != account.getPin():
+        print("--> Invalid PIN")
+        return
+    account.withdraw(amount)
+    print(f"--> {formatAmount(amount)} withdrawn from account {account_number}")
+    bank.updateAccount(account)
+    bank.saveAccounts()
+    print(f"--> New balance: {formatAmount(account.getBalance())}")
+    displayBankMenu(bank)
 
 def formatAmount(amount):
     return f"{amount:,.2f} XAF"
