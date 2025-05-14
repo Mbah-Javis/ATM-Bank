@@ -1,12 +1,36 @@
+import json
+import os
+from account import Account
+
+def loadDatabase(path):
+    db_path = os.path.join("db", path, "accounts.json")
+    if os.path.exists(db_path):
+        with open(db_path, 'r') as file:
+            return json.load(file)
+    else:
+        print("Error loading accounts")
+        return {}
+
+def saveDatabase(data, path):
+    db_path = os.path.join("db", path, "accounts.json")
+    with open(db_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
 class Bank(object):
-    def __init__(self, id, name, account_types = None):
+    def __init__(self, id, name, db_path, account_types = None):
         if (account_types == None):
             return "Account types must be a list with any of this types [Base, Premium, Gold, Diamond]"
         else:
             self.id = id
             self.name = name
             self.account_types = account_types
-            self.accounts = {}
+            self.db_path = db_path
+            self.accounts = loadDatabase(self.db_path)
+    
+    def saveAccounts(self):
+        """Saves the current accounts to the database"""
+        saveDatabase(self.accounts, self.db_path)
+        return None
     
     def getBankName(self):
         return self.name
@@ -27,19 +51,55 @@ class Bank(object):
             case _:
                 raise ValueError("Invalid account type")
     
-    def addAccount(self, account):
+    def addAccount(self, account: Account):
         """Add new bank account"""
         key = account.account_number
-        self.accounts[key] = account
+        self.accounts[key] = {
+            "name": account.name,
+            "email": account.email,
+            "phone_number": account.phone_number,
+            "account_number": account.account_number,
+            "pin": account.pin,
+            "balance": account.balance,
+            "account_type": account.account_type
+        }
+        self.saveAccounts()
     
     def removeAccount(self,  account_number):
         """Removes an account"""
         key = account_number
-        return self.accounts.pop(key, None)
+        self.accounts.pop(key, None)
+        self.saveAccounts()
+        return None
 
     def getAccount(self, account_number):
         """Returns an account with it's informations"""
         key = account_number
-        return self.accounts.get(key, None)
+        account_data = self.accounts.get(key, None)
+        if account_data:
+            return Account(
+                account_data["name"], 
+                account_data["email"],
+                account_data["phone_number"],
+                account_data["pin"],
+                account_data["account_type"],
+                account_data["balance"],
+                account_data["account_number"]
+            )
+        return None
     
+    def updateAccount(self, account: Account):
+        """Updates an account"""
+        key = account.account_number
+        self.accounts[key] = {
+            "name": account.name,
+            "email": account.email,
+            "phone_number": account.phone_number,
+            "account_number": account.account_number,
+            "pin": account.pin,
+            "balance": account.balance,
+            "account_type": account.account_type
+        }
+        self.saveAccounts()
+        return None
     
