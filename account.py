@@ -53,13 +53,3 @@ class Account(object):
         else:
             self.balance = float(self.balance) - amount
             return None
-    
-    def generateTransactionId(self):
-        """Generates a random 10-digit transaction ID."""
-        import random
-        return str(random.randint(1000000000, 9999999999))
-    
-    def addTransaction(self, transaction):
-        """Add new bank transaction"""
-        key = transaction.id
-        self.transactions[key] = transaction

@@ -1,6 +1,7 @@
 
 from bank import Bank
 from account import Account
+from transaction import Transaction
 
 bank_list = [Bank("1", "Afriland First Bank", "afriland", ["Base", "Premium", "Gold", "Diamond"]),
 Bank("2", "CCA Bank", "cca", ["Base", "Premium", "Gold"]),
@@ -76,6 +77,8 @@ def depositIntoAccount(bank: Bank):
     print(f"--> {formatAmount(amount)} deposited into account {account_number}")
     bank.updateAccount(account)
     bank.saveAccounts()
+    transacton = Transaction(amount, "deposit")
+    transacton.addTransaction(bank, account)
     print(f"--> New balance: {formatAmount(account.getBalance())}")
     displayBankMenu(bank)
 
@@ -106,6 +109,8 @@ def withdrawMoney(bank: Bank):
     print(f"--> {formatAmount(amount)} withdrawn from account {account_number}")
     bank.updateAccount(account)
     bank.saveAccounts()
+    transacton = Transaction(amount, "withdrawal")
+    transacton.addTransaction(bank, account)
     print(f"--> New balance: {formatAmount(account.getBalance())}")
     displayBankMenu(bank)
 
@@ -113,7 +118,23 @@ def formatAmount(amount):
     return f"{amount:,.2f} XAF"
 
 def viewTransactionHistory(bank: Bank):
-    print(f"Selected bank: {bank.name}")
+    print(f"View {bank.name} transaction history")
+    account_number = input("--> Enter your account number: ")
+    account = bank.getAccount(account_number)
+    if account == None:
+        print("--> Account not found")
+        return
+    print(f"--> Account name: {account.name}")
+    print(f"--> Account number: {account.account_number}")
+    print(f"--> Account type: {account.account_type}")
+    print(f"--> Account balance: {formatAmount(account.getBalance())}")
+    print(f"--> Transaction history:")
+    for transaction_id, transaction in account.transactions.items():
+        print(f"--> Transaction ID: {transaction_id}")
+        print(f"--> Amount: {formatAmount(transaction['amount'])}")
+        print(f"--> Type: {transaction['type']}")
+        print(f"--> Date: {transaction['date']}")
+        print('\n')
     pass
 
 def selectBankOption(option, bank: Bank):
