@@ -7,5 +7,14 @@
         "pin": 1234,
         "balance": 953000.0,
         "account_type": "Premium"
+    },
+    "6793815166": {
+        "name": "Mbah",
+        "email": "mbah@email.com",
+        "phone_number": "692041201",
+        "account_number": "6793815166",
+        "pin": 1234,
+        "balance": 2000000.0,
+        "account_type": "Gold"
     }
 }

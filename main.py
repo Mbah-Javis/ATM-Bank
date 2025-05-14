@@ -51,6 +51,7 @@ def createBankAccount(bank: Bank):
     if pin == confirm_pin:
         new_account = Account(name, email, phone_number, pin, account_type)
         bank.addAccount(new_account)
+        Transaction.addBankAccountInfo(bank, new_account)
         print(f"\n--> Account created with {bank.name} successfully")
         print(f"--> Account name: {new_account.name}")
         print(f"--> Account email: {new_account.email}")
@@ -128,14 +129,17 @@ def viewTransactionHistory(bank: Bank):
     print(f"--> Account number: {account.account_number}")
     print(f"--> Account type: {account.account_type}")
     print(f"--> Account balance: {formatAmount(account.getBalance())}")
-    print(f"--> Transaction history:")
-    for transaction_id, transaction in account.transactions.items():
-        print(f"--> Transaction ID: {transaction_id}")
-        print(f"--> Amount: {formatAmount(transaction['amount'])}")
-        print(f"--> Type: {transaction['type']}")
-        print(f"--> Date: {transaction['date']}")
-        print('\n')
-    pass
+    print(f"\n--- {account.account_number} Transaction History ---\n")
+    print("\n{:<15} {:<20} {:<15} {:<25}".format("Transaction ID", "Amount", "Type", "Date"))
+    print("-" * 75)
+    for transaction_id, transaction in Transaction.getAccountTransactions(bank, account).items():
+        print("{:<15} {:<20} {:<15} {:<25}".format(
+            transaction_id,
+            formatAmount(transaction['amount']),
+            transaction['type'],
+            transaction['date']
+        ))
+    print("\n")
 
 def selectBankOption(option, bank: Bank):
     match option:

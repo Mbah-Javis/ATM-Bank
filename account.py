@@ -7,7 +7,6 @@ class Account(object):
         self.account_type = account_type
         self.balance = balance
         self.account_number = account_number if account_number is not None else self.generateAccountNumber()
-        self.transactions = {}
 
     def generateAccountNumber(self):
         """Generates a random 10-digit account number."""
